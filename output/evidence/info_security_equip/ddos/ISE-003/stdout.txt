@@ -1,0 +1,2 @@
+STATUS=NA
+REASON=해당 장비 유형(ddos)은 DMZ 구간 설정 점검 대상이 아님

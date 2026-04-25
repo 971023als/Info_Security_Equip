@@ -1,0 +1,2 @@
+STATUS=NOT_IMPLEMENTED
+REASON=Phase 1 상세 진단 로직 미구현

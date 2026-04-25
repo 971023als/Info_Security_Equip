@@ -1,0 +1,5 @@
+STATUS=MANUAL_REVIEW
+REASON=백업 관련 증적 파일 존재 여부 확인 중
+STATUS=EVIDENCE_MISSING
+REASON=필수 백업 증적 파일이 존재하지 않거나 비어 있음
+EVIDENCE=Missing: backup_config.txt backup_policy.txt backup_log.txt

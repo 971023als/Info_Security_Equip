@@ -1,0 +1,3 @@
+STATUS=MANUAL_REVIEW
+REASON=존 설정 증적은 존재하나 DMZ/업무망 구분이 불명확함
+EVIDENCE=Checked files: zone_config.txt, interface_config.txt

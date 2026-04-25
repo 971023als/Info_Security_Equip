@@ -1,0 +1,3 @@
+STATUS=MANUAL_REVIEW
+REASON=로그 설정 증적은 존재하나 원격 전송 여부가 불분명함 (키워드 미발견)
+EVIDENCE=Checked files: log_config.txt, syslog_config.txt

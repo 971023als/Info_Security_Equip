@@ -1,0 +1,5 @@
+STATUS=MANUAL_REVIEW
+REASON=백업 관련 증적 파일 존재 여부 확인 중
+STATUS=PASS
+REASON=모든 필수 백업 증적 파일(3/3)이 존재하며 내용이 있음
+EVIDENCE=backup_config.txt backup_policy.txt backup_log.txt
