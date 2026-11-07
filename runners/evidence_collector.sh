@@ -31,4 +31,5 @@ fi
 
 # Appending to manifest is tricky with bash only, but we'll try to keep it simple
 # For Phase 0, we can just log the entry
+mkdir -p output/logs
 echo "$(date '+%Y-%m-%dT%H:%M:%S') | $PROFILE | $CHECK_ID | Evidence Collected" >> "output/logs/evidence.log"
