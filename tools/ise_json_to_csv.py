@@ -5,6 +5,7 @@ import os
 def json_to_csv():
     json_path = 'output/json/info_security_equip_assessment_result.json'
     csv_path = 'output/csv/info_security_equip_assessment_result.csv'
+    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     
     if not os.path.exists(json_path):
         print(f"Error: {json_path} not found")
