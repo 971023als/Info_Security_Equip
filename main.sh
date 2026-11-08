@@ -101,7 +101,10 @@ function ise_audit() {
     fi
 
     echo -e "${YELLOW}[*] Starting ISE Audit for profile: $profile${NC}"
-    bash runners/info_security_equip_runner.sh --profile "$profile" --check "$check" --dry-run "$dry_run"
+    # Omit --check when it is empty so the runner never receives a rejected empty value
+    local runner_args=(--profile "$profile" --dry-run "$dry_run")
+    [[ -n "$check" ]] && runner_args+=(--check "$check")
+    bash runners/info_security_equip_runner.sh "${runner_args[@]}"
 }
 
 function ise_report() {
@@ -162,3 +165,4 @@ case $MODULE in
         exit 1
         ;;
 esac
+
