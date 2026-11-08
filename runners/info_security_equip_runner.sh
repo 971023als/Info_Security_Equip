@@ -12,9 +12,16 @@ VERIFY=false
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --profile) PROFILE="${2:?missing --profile value}"; shift ;;
-        --check) CHECK_ID="${2:?missing --check value}"; shift ;;
-        --dry-run) DRY_RUN="$2"; shift ;;
+        --profile)
+            [[ $# -ge 2 && -n "$2" && "$2" != --* ]] || { echo "missing --profile value" >&2; exit 1; }
+            PROFILE="$2"; shift ;;
+        --check)
+            # An explicitly empty value means "all checks for the profile"; a missing value is still an error
+            [[ $# -ge 2 && "$2" != --* ]] || { echo "missing --check value" >&2; exit 1; }
+            CHECK_ID="$2"; shift ;;
+        --dry-run)
+            [[ $# -ge 2 && -n "$2" && "$2" != --* ]] || { echo "missing --dry-run value" >&2; exit 1; }
+            DRY_RUN="$2"; shift ;;
         --verify) VERIFY=true ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
@@ -57,6 +64,14 @@ if [[ ${#CHECKS[@]} -eq 0 ]]; then
 fi
 
 echo "[*] Running ${#CHECKS[@]} checks for profile: $PROFILE"
+
+ENTRY_FILE=""
+cleanup_entry_file() {
+    if [[ -n "$ENTRY_FILE" ]]; then
+        rm -f "$ENTRY_FILE"
+    fi
+}
+trap cleanup_entry_file EXIT
 
 for cid in "${CHECKS[@]}"; do
     echo "[*] Running $cid for $PROFILE..."
@@ -152,9 +167,14 @@ entry = {
 with open(entry_file, "w", encoding="utf-8") as f:
     json.dump(entry, f, ensure_ascii=False)
 EOF
-    python3 tools/update_result.py --result-file "$RESULT_FILE" --entry-file "$ENTRY_FILE" --catalog "$CATALOG"
+    if ! python3 tools/update_result.py --result-file "$RESULT_FILE" --entry-file "$ENTRY_FILE" --catalog "$CATALOG"; then
+        echo "[ERROR] could not record result for $PROFILE/$cid; aborting audit" >&2
+        exit 1
+    fi
     rm -f "$ENTRY_FILE"
+    ENTRY_FILE=""
 done
 
 echo "[+] Audit completed for profile: $PROFILE"
 echo "[+] Results recorded in $RESULT_FILE"
+
