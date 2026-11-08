@@ -1,5 +1,5 @@
 # Dockerfile for ISE Diagnosis Automation Tool
-FROM python:3.9-slim
+FROM python:3.11-slim-bookworm
 
 # Install system dependencies for WeasyPrint/Playwright and Bash
 RUN apt-get update && apt-get install -y \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libpangocairo-1.0-0 \
     libgdk-pixbuf2.0-0 \
     libffi-dev \
-    libgobject-2.0-0 \
+    libglib2.0-0 \
     shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
