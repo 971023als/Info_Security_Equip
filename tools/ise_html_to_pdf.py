@@ -4,6 +4,7 @@ import sys
 def html_to_pdf():
     html_path = 'output/html/info_security_equip_report.html'
     pdf_path = 'output/pdf/info_security_equip_report.pdf'
+    os.makedirs(os.path.dirname(pdf_path), exist_ok=True)
     
     if not os.path.exists(html_path):
         print(f"Error: {html_path} not found")

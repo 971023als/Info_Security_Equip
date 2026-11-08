@@ -22,6 +22,8 @@ mask_sensitive_data() {
 }
 
 mask_sensitive_data "$OUTPUT_BASE/stdout.txt"
+# stderr is captured into report JSON/CSV as error_message; mask it too (best-effort IP masking, not secret redaction)
+mask_sensitive_data "$OUTPUT_BASE/stderr.txt"
 
 # Update manifest (Placeholder logic)
 MANIFEST="output/evidence/info_security_equip/evidence_manifest.json"
@@ -31,4 +33,6 @@ fi
 
 # Appending to manifest is tricky with bash only, but we'll try to keep it simple
 # For Phase 0, we can just log the entry
+mkdir -p output/logs
 echo "$(date '+%Y-%m-%dT%H:%M:%S') | $PROFILE | $CHECK_ID | Evidence Collected" >> "output/logs/evidence.log"
+

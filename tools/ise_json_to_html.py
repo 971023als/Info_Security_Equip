@@ -1,9 +1,11 @@
 import json
 import os
+from html import escape
 
 def json_to_html():
     json_path = 'output/json/info_security_equip_assessment_result.json'
     html_path = 'output/html/info_security_equip_report.html'
+    os.makedirs(os.path.dirname(html_path), exist_ok=True)
     
     if not os.path.exists(json_path):
         print(f"Error: {json_path} not found")
@@ -21,15 +23,15 @@ def json_to_html():
         <title>ISE Diagnosis Report</title>
         <link rel="stylesheet" href="../../templates/ise_style.css">
         <style>
-            body { font-family: sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-            th { background-color: #f4f4f4; }
-            .status-PASS { color: green; font-weight: bold; }
-            .status-FAIL { color: red; font-weight: bold; }
-            .status-ERROR { color: darkred; font-weight: bold; }
-            .status-MANUAL_REVIEW { color: orange; font-weight: bold; }
-            .status-EVIDENCE_MISSING { color: purple; font-weight: bold; }
+            body {{ font-family: sans-serif; margin: 20px; }}
+            table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+            th, td {{ border: 1px solid #ccc; padding: 10px; text-align: left; }}
+            th {{ background-color: #f4f4f4; }}
+            .status-PASS {{ color: green; font-weight: bold; }}
+            .status-FAIL {{ color: red; font-weight: bold; }}
+            .status-ERROR {{ color: darkred; font-weight: bold; }}
+            .status-MANUAL_REVIEW {{ color: orange; font-weight: bold; }}
+            .status-EVIDENCE_MISSING {{ color: purple; font-weight: bold; }}
         </style>
     </head>
     <body>
@@ -45,6 +47,8 @@ def json_to_html():
                 <th>수동점검(MANUAL)</th>
                 <th>증적부족(MISSING)</th>
                 <th>오류(ERROR)</th>
+                <th>미구현(NOT_IMPLEMENTED)</th>
+                <th>해당없음(NA)</th>
             </tr>
             <tr>
                 <td>{total}</td>
@@ -53,6 +57,8 @@ def json_to_html():
                 <td>{manual_count}</td>
                 <td>{missing_count}</td>
                 <td>{error_count}</td>
+                <td>{not_implemented_count}</td>
+                <td>{na_count}</td>
             </tr>
         </table>
 
@@ -75,6 +81,8 @@ def json_to_html():
     rows = ""
     for r in results:
         status = r.get('status', 'UNKNOWN')
+        r = {k: escape(str(v), quote=True) for k, v in r.items()}
+        status = escape(str(status), quote=True)
         rows += f"""
         <tr>
             <td>{r.get('id', '')}</td>
@@ -87,13 +95,15 @@ def json_to_html():
 
     summary = data.get('summary', {})
     html_content = html_template.format(
-        generated_at=data.get('generated_at', 'N/A'),
+        generated_at=escape(str(data.get('generated_at', 'N/A'))),
         total=summary.get('total', 0),
         pass_count=summary.get('pass', 0),
         fail_count=summary.get('fail', 0),
         manual_count=summary.get('manual_review', 0),
         missing_count=summary.get('evidence_missing', 0),
         error_count=summary.get('error', 0),
+        not_implemented_count=summary.get('not_implemented', 0),
+        na_count=summary.get('na', 0),
         result_rows=rows
     )
 
